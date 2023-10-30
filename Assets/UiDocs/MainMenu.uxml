@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="main-menu" style="flex-grow: 1; background-color: rgb(29, 243, 149); flex-direction: row;">
+        <ui:VisualElement name="menu-container" style="width: 30%; background-color: rgba(0, 0, 0, 0.47); margin-left: auto; padding-top: 24px; padding-bottom: 24px; padding-right: 8px; padding-left: 8px; flex-direction: column; justify-content: flex-end;">
+            <ui:Button text="Host" parse-escape-sequences="true" display-tooltip-when-elided="true" name="host-btn" style="height: 120px; margin-top: 24px; margin-right: 24px; margin-bottom: 24px; margin-left: 24px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; font-size: 48px; -unity-font-style: bold;" />
+            <ui:Button text="Join" parse-escape-sequences="true" display-tooltip-when-elided="true" name="join-btn" style="height: 120px; margin-top: 24px; margin-right: 24px; margin-bottom: 24px; margin-left: 24px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; font-size: 48px; -unity-font-style: bold;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

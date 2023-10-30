@@ -1,0 +1,5 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="hand-panel" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0.78); color: rgb(255, 255, 255); flex-direction: row; align-items: center; justify-content: center; padding-top: 24px; padding-right: 24px; padding-bottom: 24px; padding-left: 24px; width: 960px; height: 216px; max-height: 216px;">
+        <ui:Label tabindex="-1" text="Hand" parse-escape-sequences="true" display-tooltip-when-elided="true" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; font-size: 98px; -unity-font-style: bold; -unity-text-align: middle-center; position: absolute; width: 960px; height: 216px; left: 0;" />
+    </ui:VisualElement>
+</ui:UXML>

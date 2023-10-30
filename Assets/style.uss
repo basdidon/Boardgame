@@ -1,0 +1,5 @@
+.hand-panel {
+    bottom: 0;
+    position: absolute;
+    left: 480px;
+}

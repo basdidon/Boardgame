@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Template name="DeckPanel" src="project://database/Assets/UiDocs/DeckPanel.uxml?fileID=9197481963319205126&amp;guid=d160d3c8776e1354d881b9107173b452&amp;type=3#DeckPanel" />
+    <ui:Template name="HandPanel" src="project://database/Assets/UiDocs/HandPanel.uxml?fileID=9197481963319205126&amp;guid=5436f53b2d17710478b640b020a84fb6&amp;type=3#HandPanel" />
+    <ui:Template name="PlayCardZone" src="project://database/Assets/UiDocs/PlayCardZone.uxml?fileID=9197481963319205126&amp;guid=c0232a4059196b246bef27d8841b9336&amp;type=3#PlayCardZone" />
+    <Style src="project://database/Assets/style.uss?fileID=7433441132597879392&amp;guid=411df43113d72ba469a9d6250622bd72&amp;type=3#style" />
+    <ui:Instance template="DeckPanel" name="DeckPanel" style="width: 12%; height: 30%; margin-top: auto;" />
+    <ui:Instance template="HandPanel" name="HandPanel" class="hand-panel" />
+    <ui:Instance template="PlayCardZone" name="PlayCardZone" style="position: absolute; width: 1000px; height: 500px; left: 460px; bottom: 290px;" />
+</ui:UXML>
