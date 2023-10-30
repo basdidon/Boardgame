@@ -110,7 +110,7 @@ public class FireBallCard : Card
                 hitEnemy.TakeDamage(5);
             Object.Destroy(obj); 
 
-            if(Tr)
+
         };
     }
 }
