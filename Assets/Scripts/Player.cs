@@ -3,24 +3,12 @@ using System.Linq;
 using System.Collections.Generic;
 using System;
 
-public class Player : MonoBehaviour, IBoardObject
+public class Player : Character
 {
     public static Player Instance { get; private set; }
     // IBoardObject
-    public Transform Transform => transform;
 
-    [SerializeField] Vector3Int cellPos;
-    public Vector3Int CellPos
-    {
-        get => cellPos;
-        set
-        {
-            cellPos = value;
-            transform.position = BoardManager.Instance.MainGrid.GetCellCenterWorld(CellPos);
-        }
-    }
-
-    public bool CanMoveTo(Vector3Int cellPos)
+    public override bool CanMoveTo(Vector3Int cellPos)
     {
         if (BoardManager.Instance.BoardObjectsOnCell(cellPos).Count() > 0)
             return false;
@@ -30,10 +18,13 @@ public class Player : MonoBehaviour, IBoardObject
     // Player Deck
     Deck Deck { get; set; }
 
+    //List<Card> Hands { get; set; }
     // Action Point
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         if(Instance != null && Instance != this)
         {
             Destroy(this);
@@ -58,13 +49,11 @@ public class Player : MonoBehaviour, IBoardObject
         Deck.SuffleDeck();
         DrawCard(5);
         TurnManager.Instance.OnTurnChanged += OnTurnChangedHandle;
-        TurnManager.Instance.TurnRegister(this);
-        BoardManager.Instance.AddBoardObject(this);
     }
 
-    public void OnTurnChangedHandle(Player player)
+    public void OnTurnChangedHandle(Character character)
     {
-        if (player != this)
+        if (character != this)
             return;
 
         Debug.Log("My Turn!!");
@@ -80,6 +69,8 @@ public class Player : MonoBehaviour, IBoardObject
             if (Deck.TryDraw(out Card card))
             {
                 OnDrawCard?.Invoke(card);
+                //put that card to hand
+                //Hands.Add(card);
             }
             else
             {
@@ -94,5 +85,15 @@ public class Player : MonoBehaviour, IBoardObject
     {
         BoardManager.Instance.TryTeleportObject(this,CellPos + direction);
     }
-    
+
+    public override void TakeDamage(int damage)
+    {
+        hp -= damage;
+
+        if (hp <= 0)
+        {
+            BoardManager.Instance.RemoveBoardObject(this);
+            Destroy(gameObject);
+        }
+    }
 }

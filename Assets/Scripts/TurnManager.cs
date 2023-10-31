@@ -11,24 +11,21 @@ public class TurnManager : MonoBehaviour
     public static TurnManager Instance { get; private set; }
 
     // Queue
-    [SerializeField] List<Player> playersQueue;
-    public IReadOnlyList<Player> PlayersQueue
-    {
-        get => playersQueue;
-    }
+    [SerializeField] List<Character> queue;
+    public IReadOnlyList<Character> Queue => queue;
 
     // CurruntTurn
-    [SerializeField]  Player currentPlayer;
-    public Player CurrentTurn {
-        get => currentPlayer;
+    [SerializeField]  Character currentTurn;
+    public Character CurrentTurn {
+        get => currentTurn;
         private set
         {
-            currentPlayer = value;
+            currentTurn = value;
             CurrentActionPoint = maxActionPoint;
             OnTurnChanged?.Invoke(CurrentTurn);
         }
     }
-    public Action<Player> OnTurnChanged;
+    public Action<Character> OnTurnChanged;
 
     // action point
     readonly int maxActionPoint = 3;
@@ -45,60 +42,40 @@ public class TurnManager : MonoBehaviour
             Instance = this;
         }
 
-        playersQueue = new();
+        queue = new();
     }
 
-    public void TurnRegister(Player player)
+    private void Start()
     {
-        playersQueue.Add(player);
-        StartRunTurn();
-    }
-
-    public void TurnUnregister(Player player)
-    {
-        playersQueue.Remove(player);
-        if (CurrentTurn == player && PlayersQueue.Count > 0)
+        if(Queue.Count > 0)
         {
-            CurrentTurn = PlayersQueue[0];
+            CurrentTurn = Queue[0];
+        }
+
+        Debug.Log("Start");
+    }
+
+    public void TurnRegister(Character character)
+    {
+        queue.Add(character);
+    }
+
+    public void TurnUnregister(Character character)
+    {
+        queue.Remove(character);
+        if (CurrentTurn == character && Queue.Count > 0)
+        {
+            CurrentTurn = Queue[0];
         }
     }
 
-    public void StartRunTurn()
+    public void EndTurn(Character character)
     {
-        CurrentTurn = PlayersQueue[0];
-    }
+        if (CurrentTurn != character)
+            return;
 
-    public void NextTurn()
-    {
-        playersQueue.RemoveAt(0);
-        playersQueue.Add(CurrentTurn);
-        CurrentTurn = PlayersQueue[0];
+        queue.RemoveAt(0);
+        queue.Add(CurrentTurn);
+        CurrentTurn = Queue[0];
     }
 }
-
-#if UNITY_EDITOR
-[CustomEditor(typeof(TurnManager))]
-public class TurnManagerCustomEditor : Editor
-{
-    public override void OnInspectorGUI()
-    {
-        DrawDefaultInspector();
-
-        if (target is TurnManager _target)
-        {
-            if (Application.isPlaying)
-            {
-                if (GUILayout.Button("StartRunTurn"))
-                {
-                    _target.StartRunTurn();
-                }
-                if (GUILayout.Button("NextTurn"))
-                {
-                    _target.NextTurn();
-                }
-            }
-        }
-
-    }
-}
-#endif

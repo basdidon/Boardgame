@@ -1,16 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour, IBoardObject, IDamageable
+public class Enemy : Character
 {
-    public Transform Transform => transform;
-    [field: SerializeField] public Vector3Int CellPos { get; set; }
-    public bool CanMoveTo(Vector3Int cellPos) => false; // can't move
+    public override bool CanMoveTo(Vector3Int cellPos) => false;
 
-    [SerializeField] int hp = 10;
-
-    public void TakeDamage(int damage)
+    public override void TakeDamage(int damage)
     {
         hp -= damage;
 
@@ -20,9 +17,18 @@ public class Enemy : MonoBehaviour, IBoardObject, IDamageable
         }
     }
 
-    private void Start()
+    protected override void Awake()
     {
-        CellPos = BoardManager.Instance.MainGrid.WorldToCell(Transform.position);   // self attech to grid
-        BoardManager.Instance.AddBoardObject(this);
+        base.Awake();
+        TurnManager.Instance.OnTurnChanged += OnTurnChangedHandle;
+    }
+
+    private void OnTurnChangedHandle(Character character)
+    {
+        if (character != this)
+            return;
+        Debug.Log("Enemy Turn !!");
+        Debug.Log("Enemy: i am lazy, so i decide to do nothing.");
+        EndTurn();
     }
 }

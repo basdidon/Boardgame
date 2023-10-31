@@ -108,6 +108,8 @@ public class FireBallCard : Card
         mySequence.onComplete += () => {
             if (hitEnemy != null)
                 hitEnemy.TakeDamage(5);
+
+      
             Object.Destroy(obj); 
 
 
