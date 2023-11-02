@@ -1,33 +1,45 @@
+using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
-using System.Linq;
 
-public class PlayerSelector : MonoBehaviour
+public abstract class TargetSelector
 {
-    public static PlayerSelector Instance { get; private set; }
 
-    TurnManager TurnManager => TurnManager.Instance;
+}
+
+public class CellSelector : TargetSelector
+{
     Grid MainGrid => BoardManager.Instance.MainGrid;
+    Func<Vector3Int, bool> Predicate { get; }
+    readonly InputProvider inputProvider;
 
-    private void Awake()
+    public CellSelector(Func<Vector3Int, bool> predicate)
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            Instance = this;
-        }
+        Predicate = predicate;
+        inputProvider = Player.Instance.GetComponent<InputProvider>();
     }
 
-    public IEnumerator GetCell(Func<Vector3Int, bool> predicate, Action<Vector3Int> OnSuccess = null,Action<Vector3Int> OnUpdate = null, Action OnCancle = null, Action OnDebug = null)
+    Vector3Int targetCell = Vector3Int.zero;
+    List<Vector3Int> predicatedCells;
+
+    //
+    public void Start() => BoardManager.Instance.StartCoroutine(GetCell());
+    public void Cancle() => isCancle = true;
+    public void Choose() => isPass = predicatedCells.Contains(targetCell);
+
+    // state control
+    bool isPass = false;
+    bool isCancle = false;
+
+    // Events
+    public Action<Vector3Int> OnSuccess { get; set; }
+    public Action<Vector3Int> OnUpdate { get; set; }
+    public Action OnCancle { get; set; }
+
+    public IEnumerator GetCell()
     {
-        bool isPass = false;
-        bool isCancle = false;
-        Vector3Int targetCell = Vector3Int.zero;
         RaycastHit[] hits = new RaycastHit[100];
         int hitsCount;
         Debug.Log("StartSelection");
@@ -38,12 +50,12 @@ public class PlayerSelector : MonoBehaviour
             _focusOverlay.SetActive(true);
 
         // list of cell those meet criteria
-        List<Vector3Int> predicatedCells = new();
+        predicatedCells = new();
         List<GameObject> predicatedOverlays = new();
         foreach (var rectPos in BoardManager.Instance.MapRect.allPositionsWithin)
         {
             var cellPos = (Vector3Int)rectPos;
-            if (predicate(cellPos))
+            if (Predicate(cellPos))
             {
                 predicatedCells.Add(cellPos);
                 var _predicatedOverlay = TileOverlayPool.Instance.GetFocusOverlay(TileOverlayPool.OverlayType.Green);
@@ -62,15 +74,6 @@ public class PlayerSelector : MonoBehaviour
             yield return null;
         }
 
-        // Input Logic
-        InputProvider inputProvider = Player.Instance.GetComponent<InputProvider>();
-
-        inputProvider.BaseGameplay.Disable();
-        inputProvider.SelectTarget.Enable();
-        OnDebug += delegate { Debug.Log("Got u"); };
-        inputProvider.SelectTarget.LeftClick.performed += _ => isPass = OnPickCell(targetCell, predicatedCells);
-        inputProvider.SelectTarget.Cancle.performed += _ => isCancle = true;
-
         yield return new WaitUntil(() => {
             hitsCount = Physics.RaycastNonAlloc(Camera.main.ScreenPointToRay(inputProvider.SelectTarget.CursorPosition.ReadValue<Vector2>()), hits, 100);
             if (hitsCount > 0)
@@ -86,7 +89,7 @@ public class PlayerSelector : MonoBehaviour
                 }
             }
 
-            if(targetCell != null)
+            if (targetCell != null)
                 OnUpdate?.Invoke(targetCell);
 
             return isPass || isCancle;
@@ -101,11 +104,6 @@ public class PlayerSelector : MonoBehaviour
             overlayObject.SetActive(false);
         }
 
-        inputProvider.SelectTarget.LeftClick.performed -= _ => isPass = OnPickCell(targetCell, predicatedCells);
-        inputProvider.SelectTarget.Cancle.performed -= _ => isCancle = true;
-        inputProvider.SelectTarget.Disable();
-        inputProvider.BaseGameplay.Enable();
-
         if (!isCancle)
         {
             OnSuccess?.Invoke(targetCell);
@@ -117,10 +115,5 @@ public class PlayerSelector : MonoBehaviour
 
 
         Debug.Log("end selection!!");
-    }
-
-    bool OnPickCell(Vector3Int targetCell, List<Vector3Int> predicatedCells)
-    {
-        return predicatedCells.Contains(targetCell);
     }
 }

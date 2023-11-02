@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using System.Linq;
+using BasDidon;
 using DG.Tweening;
 
 public class FireBallCard : Card

@@ -2,18 +2,37 @@ using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
 using System;
+using BasDidon.PathFinder;
+using static BasDidon.Direction;
 
 public class Player : Character
 {
     public static Player Instance { get; private set; }
-    // IBoardObject
 
+    #region IBoardObject Implements
     public override bool CanMoveTo(Vector3Int cellPos)
     {
         if (BoardManager.Instance.BoardObjectsOnCell(cellPos).Count() > 0)
             return false;
         return true;
     }
+
+    public override bool TryMove(Vector3Int from, Directions dir, out Vector3Int moveResult)
+    {
+        moveResult = CellPos;
+        var targetCell = from + DirectionToVector3Int(dir);
+        if (!CanMoveTo(targetCell))
+            return false;
+
+        /// some scenario we move character it won't stop at target cell
+        /// for example, if targetCell are iceFloor tile it keep moving character at start direction and stop on another cell
+        /// but i will handle it later
+
+        moveResult = targetCell;
+        return true;
+
+    }
+    #endregion
 
     // Player Deck
     Deck Deck { get; set; }
@@ -42,23 +61,39 @@ public class Player : Character
         }
 
         Deck = new(cardList);
+
+        IdleState = new PlayerIdleState(this);
+        State = IdleState;
+        
     }
 
     private void Start()
     {
         Deck.SuffleDeck();
         DrawCard(5);
-        TurnManager.Instance.OnTurnChanged += OnTurnChangedHandle;
     }
 
-    public void OnTurnChangedHandle(Character character)
+    protected override void OnTurnChangedHandle(Character character)
     {
         if (character != this)
             return;
 
         Debug.Log("My Turn!!");
     }
-
+    /*
+    public void PredictMoves()
+    {
+        var moveableCell = GridPathFinder.PredictMoves(this, 5);
+        Debug.Log(moveableCell.Count);
+        StartCoroutine(PlayerSelector.Instance.GetCell(
+            cell => moveableCell.Any(move => move.ResultCell == cell),
+            OnSuccess: (cell) => {
+                var moves = GridPathFinder.PredictMoves(this, 5).First(move => move.ResultCell == cell);
+                State = new PlayerMoveState(this,moves.Directions);
+            })
+        );
+    }
+    */
     public void DrawCard(int n = 1)
     {
         if (n < 1)
@@ -96,4 +131,11 @@ public class Player : Character
             Destroy(gameObject);
         }
     }
+
+    void GetMovableCell()
+    {
+
+    }
+
+
 }

@@ -1,7 +1,9 @@
+using BasDidon;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static BasDidon.Direction;
 
 public class Enemy : Character
 {
@@ -17,13 +19,12 @@ public class Enemy : Character
         }
     }
 
-    protected override void Awake()
+    public override bool TryMove(Vector3Int from, Directions dir,out Vector3Int moveResult)
     {
-        base.Awake();
-        TurnManager.Instance.OnTurnChanged += OnTurnChangedHandle;
+        throw new NotImplementedException();
     }
 
-    private void OnTurnChangedHandle(Character character)
+    protected override void OnTurnChangedHandle(Character character)
     {
         if (character != this)
             return;

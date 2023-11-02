@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "basdidonunitypackage": {
+      "version": "https://github.com/basdidon/basdidonUnityPackage.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "e21e9ab210b2fd18e45c26060fa76c203e022648"
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
