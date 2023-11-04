@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
-
+/*
 public class PlayerSelector : MonoBehaviour
 {
     public static PlayerSelector Instance { get; private set; }
@@ -123,4 +123,4 @@ public class PlayerSelector : MonoBehaviour
     {
         return predicatedCells.Contains(targetCell);
     }
-}
+}*/

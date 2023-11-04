@@ -914,8 +914,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4526169507ea81549bc3576108e88526, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playersQueue: []
-  currentPlayer: {fileID: 0}
+  queue: []
+  currentTurn: {fileID: 0}
 --- !u!4 &231107359
 Transform:
   m_ObjectHideFlags: 0
@@ -7031,7 +7031,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7858648218761746677, guid: a08ce667d2bdfff4a83720cb4ee1dae2, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

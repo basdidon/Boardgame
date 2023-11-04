@@ -20,7 +20,6 @@ public abstract class Character : MonoBehaviour, IBoardObject,IStateActor, IDama
     }
     #endregion
 
-
     [SerializeField] protected int hp = 10;
 
     public abstract bool CanMoveTo(Vector3Int cellPos);
@@ -54,7 +53,7 @@ public abstract class Character : MonoBehaviour, IBoardObject,IStateActor, IDama
 
     IState state;
     public IState State {
-        get => state; 
+        get => state;
         set
         {
             State?.OnExit();

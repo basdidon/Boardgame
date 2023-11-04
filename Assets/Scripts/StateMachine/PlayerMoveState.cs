@@ -60,8 +60,6 @@ public sealed class PlayerMoveState : MoveState<Player>
     {
         StateActor.transform.position = TargetWorldCenter;
         StateActor.CellPos = TargetCell;
-
-        Debug.Log($"->> {Directions.Count}");
     }
 }
 

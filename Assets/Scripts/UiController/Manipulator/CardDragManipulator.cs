@@ -61,10 +61,10 @@ public class CardDragManipulator : PointerManipulator
         if (Enabled)
         {
             VisualElement playZone = Root.Q("play-a-card-panel");
-            Debug.Log($"{playZone.worldBound} : {target.worldBound}");
+            //Debug.Log($"{playZone.worldBound} : {target.worldBound}");
             if (target.worldBound.Overlaps(playZone.worldBound))
             {
-                Debug.Log("on drop-zone");
+                //Debug.Log("on drop-zone");
                 if (target.userData is Card card)
                 {
                     card.UseCard();

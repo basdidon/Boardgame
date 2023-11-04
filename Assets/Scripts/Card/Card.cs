@@ -8,7 +8,23 @@ public abstract class Card
 {
     public Player Player => Player.Instance;
 
+    public VisualElement Root { get; private set; }
     public VisualElement CardVE { get; private set; }
+    public CardDragManipulator CardDragManipulator { get; private set; }
+
+    public bool dragable = true;
+    public bool Dragable
+    {
+        get => dragable;
+        set
+        {
+            dragable = value;
+
+            CardVE.RemoveManipulator(CardDragManipulator);
+            if (Dragable == true)
+                CardVE.AddManipulator(CardDragManipulator);
+        }
+    }
 
     public CardSO CardSO { get; private set; }
     readonly string cardDataURL = "CardsData/";
@@ -19,11 +35,14 @@ public abstract class Card
         CardSO = Resources.Load(cardDataURL + CardSOName) as CardSO;
     }
 
-    public void BindVisualElement(VisualElement cardVE)
+    public void BindVisualElement(VisualElement cardVE,VisualElement root)
     {
         CardVE = cardVE;
         cardVE.userData = this;
 
+        Root = root;
+        CardDragManipulator = new CardDragManipulator(cardVE, Root);
+        Dragable = true;
         // update cardVE (set name,cost)
     }
 

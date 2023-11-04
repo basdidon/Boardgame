@@ -108,20 +108,20 @@
                 },
                 {
                     "name": "LeftClick",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "f6409d36-0ea8-4591-88a8-149ae1696dce",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Press",
                     "initialStateCheck": false
                 },
                 {
                     "name": "Cancle",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "6eb687b0-6398-49d6-8856-41514ec4eb5f",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Press",
                     "initialStateCheck": false
                 }
             ],
@@ -141,7 +141,7 @@
                     "name": "",
                     "id": "f2a9fa8e-d2c3-4f80-a219-5a3a4c0db81f",
                     "path": "<Mouse>/leftButton",
-                    "interactions": "Press",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "LeftClick",
@@ -152,7 +152,7 @@
                     "name": "",
                     "id": "52dcbc74-9987-4dff-9635-570d1505450e",
                     "path": "<Mouse>/rightButton",
-                    "interactions": "Press",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Cancle",

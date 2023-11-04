@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public abstract class TargetSelector
 {
@@ -13,45 +14,86 @@ public class CellSelector : TargetSelector
 {
     Grid MainGrid => BoardManager.Instance.MainGrid;
     Func<Vector3Int, bool> Predicate { get; }
-    readonly InputProvider inputProvider;
+    InputProvider InputProvider => Player.Instance.InputProvider;
+    Coroutine Coroutine { get; set; }
+
+    GameObject _focusOverlay;
+    List<GameObject> predicatedOverlays;
 
     public CellSelector(Func<Vector3Int, bool> predicate)
     {
         Predicate = predicate;
-        inputProvider = Player.Instance.GetComponent<InputProvider>();
     }
 
     Vector3Int targetCell = Vector3Int.zero;
     List<Vector3Int> predicatedCells;
 
     //
-    public void Start() => BoardManager.Instance.StartCoroutine(GetCell());
-    public void Cancle() => isCancle = true;
-    public void Choose() => isPass = predicatedCells.Contains(targetCell);
+    public void Start()
+    {
+        OnStart?.Invoke();
+        Coroutine = BoardManager.Instance.StartCoroutine(GetCell());
+
+        OnLeave += () =>
+        {
+            // set everything back
+            if (_focusOverlay != null)
+                _focusOverlay.SetActive(false);
+
+            foreach (var overlayObject in predicatedOverlays)
+            {
+                overlayObject.SetActive(false);
+            }
+        };
+    }
+
+    public void Cancle()
+    {
+        isCancle = true;
+        BoardManager.Instance.StopCoroutine(Coroutine);
+        OnCancle?.Invoke();
+        OnLeave?.Invoke();
+    }
+
+    public void Cancle(InputAction.CallbackContext ctx)
+    {
+        Cancle();
+    }
+
+    public void Choose(InputAction.CallbackContext ctx)
+    {
+        isPass = predicatedCells.Contains(targetCell);
+        Debug.Log($"you choose : {targetCell}");
+    }
 
     // state control
     bool isPass = false;
     bool isCancle = false;
 
+    public bool IsPass => isPass;
+    public bool IsCancle => isCancle;
+
     // Events
-    public Action<Vector3Int> OnSuccess { get; set; }
-    public Action<Vector3Int> OnUpdate { get; set; }
-    public Action OnCancle { get; set; }
+    public event Action OnStart;
+    public event Action<Vector3Int> OnUpdate;
+    public event Action<Vector3Int> OnSuccess;
+    public event Action OnCancle;
+    public event Action OnLeave;
 
     public IEnumerator GetCell()
     {
         RaycastHit[] hits = new RaycastHit[100];
         int hitsCount;
-        Debug.Log("StartSelection");
+        //Debug.Log("StartSelection");
 
         // Active Focus Overlay
-        var _focusOverlay = TileOverlayPool.Instance.GetFocusOverlay(TileOverlayPool.OverlayType.Focus);
-        if (_focusOverlay != null)
+        _focusOverlay = TileOverlayPool.Instance.GetFocusOverlay(TileOverlayPool.OverlayType.Focus);
+        if(_focusOverlay != null)
             _focusOverlay.SetActive(true);
 
         // list of cell those meet criteria
         predicatedCells = new();
-        List<GameObject> predicatedOverlays = new();
+        predicatedOverlays = new();
         foreach (var rectPos in BoardManager.Instance.MapRect.allPositionsWithin)
         {
             var cellPos = (Vector3Int)rectPos;
@@ -75,7 +117,7 @@ public class CellSelector : TargetSelector
         }
 
         yield return new WaitUntil(() => {
-            hitsCount = Physics.RaycastNonAlloc(Camera.main.ScreenPointToRay(inputProvider.SelectTarget.CursorPosition.ReadValue<Vector2>()), hits, 100);
+            hitsCount = Physics.RaycastNonAlloc(Camera.main.ScreenPointToRay(InputProvider.SelectTarget.CursorPosition.ReadValue<Vector2>()), hits, 100);
             if (hitsCount > 0)
             {
                 var slicedHits = hits.Take(hitsCount);
@@ -92,28 +134,13 @@ public class CellSelector : TargetSelector
             if (targetCell != null)
                 OnUpdate?.Invoke(targetCell);
 
-            return isPass || isCancle;
+            return isPass;
         });
 
-        // set everything back
-        if (_focusOverlay != null)
-            _focusOverlay.SetActive(false);
-
-        foreach (var overlayObject in predicatedOverlays)
-        {
-            overlayObject.SetActive(false);
-        }
-
-        if (!isCancle)
-        {
-            OnSuccess?.Invoke(targetCell);
-        }
-        else
-        {
-            OnCancle?.Invoke();
-        }
-
-
-        Debug.Log("end selection!!");
+        OnSuccess?.Invoke(targetCell);
+        OnLeave?.Invoke();
+        //Debug.Log("end selection!!");
     }
+
+
 }

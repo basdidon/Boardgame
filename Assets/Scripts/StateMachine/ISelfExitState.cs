@@ -1,5 +1,5 @@
 
-public interface ISelfExitState : IState
+public interface ISelfExitState
 {
     public void SetNextState();
 }

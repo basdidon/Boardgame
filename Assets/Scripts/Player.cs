@@ -8,6 +8,7 @@ using static BasDidon.Direction;
 public class Player : Character
 {
     public static Player Instance { get; private set; }
+    public InputProvider InputProvider { get; private set; }
 
     #region IBoardObject Implements
     public override bool CanMoveTo(Vector3Int cellPos)
@@ -37,7 +38,7 @@ public class Player : Character
     // Player Deck
     Deck Deck { get; set; }
 
-    //List<Card> Hands { get; set; }
+    Hand Hand { get; set; }
     // Action Point
 
     protected override void Awake()
@@ -53,6 +54,8 @@ public class Player : Character
             Instance = this;
         }
 
+        InputProvider = GetComponent<InputProvider>();
+
         var cardList = new List<Card>();
 
         for (int i = 0; i < 10; i++)
@@ -61,6 +64,7 @@ public class Player : Character
         }
 
         Deck = new(cardList);
+        Hand = new();
 
         IdleState = new PlayerIdleState(this);
         State = IdleState;
@@ -80,20 +84,7 @@ public class Player : Character
 
         Debug.Log("My Turn!!");
     }
-    /*
-    public void PredictMoves()
-    {
-        var moveableCell = GridPathFinder.PredictMoves(this, 5);
-        Debug.Log(moveableCell.Count);
-        StartCoroutine(PlayerSelector.Instance.GetCell(
-            cell => moveableCell.Any(move => move.ResultCell == cell),
-            OnSuccess: (cell) => {
-                var moves = GridPathFinder.PredictMoves(this, 5).First(move => move.ResultCell == cell);
-                State = new PlayerMoveState(this,moves.Directions);
-            })
-        );
-    }
-    */
+
     public void DrawCard(int n = 1)
     {
         if (n < 1)
@@ -105,7 +96,7 @@ public class Player : Character
             {
                 OnDrawCard?.Invoke(card);
                 //put that card to hand
-                //Hands.Add(card);
+                Hand.AddCard(card);
             }
             else
             {
@@ -131,11 +122,4 @@ public class Player : Character
             Destroy(gameObject);
         }
     }
-
-    void GetMovableCell()
-    {
-
-    }
-
-
 }

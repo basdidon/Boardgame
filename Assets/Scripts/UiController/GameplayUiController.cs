@@ -28,10 +28,10 @@ namespace Boardgame.Ui
         public void OnDrawCardHandle(Card newCard)
         {
             var cardVE = CardTreeAsset.Instantiate();
-            newCard.BindVisualElement(cardVE);
+            newCard.BindVisualElement(cardVE,Root);
             cardVE.style.marginLeft = 12;
             cardVE.style.marginRight = 12;
-            cardVE.AddManipulator(new CardDragManipulator(cardVE, Root));
+            //cardVE.AddManipulator(new CardDragManipulator(cardVE, Root));
             HandPanel.Add(cardVE);
         }
     }
