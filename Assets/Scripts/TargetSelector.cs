@@ -19,17 +19,31 @@ public class CellSelector : TargetSelector
     GameObject _focusOverlay;
     List<GameObject> predicatedOverlays;
 
+    // state control
+    public enum SelectorPhase { created,started,performed,cancled}
+    public SelectorPhase Phase { get; private set; }
+
+    // Events
+    public event Action OnStart;
+    public event Action<Vector3Int> OnUpdate;
+    public event Action<Vector3Int> OnSuccess;
+    public event Action OnCancle;
+    public event Action OnLeave;
+
     public CellSelector(Func<Vector3Int, bool> predicate)
     {
         Predicate = predicate;
+        Phase = SelectorPhase.created;
     }
 
     List<Vector3Int> predicatedCells;
 
     //
-    public void Start()
+    public void Start() 
     {
         OnStart?.Invoke();
+        Phase = SelectorPhase.started;
+
         BoardManager.Instance.StartCoroutine(GetCell());
 
         OnLeave += () =>
@@ -45,28 +59,21 @@ public class CellSelector : TargetSelector
         };
     }
 
-    public void Cancle()
+    public void Cancle(InputAction.CallbackContext _) => Cancle();
+    public void Cancle() 
     {
-        isCancle = true;
-       // BoardManager.Instance.StopCoroutine(Coroutine);
+        Phase = SelectorPhase.cancled;
         OnCancle?.Invoke();
         OnLeave?.Invoke();
     }
 
-    public void Cancle(InputAction.CallbackContext ctx)
-    {
-        Cancle();
-    }
-
-    public void Choose(InputAction.CallbackContext ctx)
+    public void Choose(InputAction.CallbackContext _)
     {
         if (TryGetCellByScreenPoint(out Vector3Int targetCell) && predicatedCells.Contains(targetCell))
         {
-            //BoardManager.Instance.StopCoroutine(Coroutine);
-            isPass = true;
+            Phase = SelectorPhase.performed;
             OnSuccess?.Invoke(targetCell);
             OnLeave?.Invoke();
-            Debug.Log($"you choose : {targetCell}");
         }
     }
 
@@ -93,20 +100,6 @@ public class CellSelector : TargetSelector
         return false;
     }
 
-    // state control
-    bool isPass = false;
-    bool isCancle = false;
-
-    public bool IsPass => isPass;
-    public bool IsCancle => isCancle;
-
-    // Events
-    public event Action OnStart;
-    public event Action<Vector3Int> OnUpdate;
-    public event Action<Vector3Int> OnSuccess;
-    public event Action OnCancle;
-    public event Action OnLeave;
-
     public IEnumerator GetCell()
     {
         // Active Focus Overlay
@@ -127,7 +120,9 @@ public class CellSelector : TargetSelector
                 if (_predicatedOverlay != null)
                 {
                     _predicatedOverlay.SetActive(true);
-                    _predicatedOverlay.transform.position = MainGrid.GetCellCenterWorld(cellPos);
+                    var cellWorldPos = MainGrid.GetCellCenterWorld(cellPos);
+                    var worldPos = new Vector3(cellWorldPos.x, 0.1f, cellWorldPos.z);
+                    _predicatedOverlay.transform.position = worldPos;
                 }
                 predicatedOverlays.Add(_predicatedOverlay);
             }
@@ -145,13 +140,15 @@ public class CellSelector : TargetSelector
                 OnUpdate?.Invoke(targetCell);
 
                 if (_focusOverlay != null)
-                    _focusOverlay.transform.position = MainGrid.GetCellCenterWorld(targetCell);
+                {
+                    var cellWorldPos = MainGrid.GetCellCenterWorld(targetCell);
+                    var worldPos = new Vector3(cellWorldPos.x, 0.1f,cellWorldPos.z);
+                    _focusOverlay.transform.position = worldPos;
+                }
             }
+            return Phase == SelectorPhase.performed || Phase == SelectorPhase.cancled;
                
-            return isPass || isCancle;
         });
-
-        //Debug.Log("end selection!!");
     }
 
 

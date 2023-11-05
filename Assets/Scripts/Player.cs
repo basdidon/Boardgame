@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
 using System;
-using BasDidon.PathFinder;
 using static BasDidon.Direction;
 
 public class Player : Character
@@ -37,9 +36,11 @@ public class Player : Character
 
     // Player Deck
     Deck Deck { get; set; }
-
     Hand Hand { get; set; }
+
     // Action Point
+    int MaxActionPoint => 3;
+    public int ActionPiont { get; private set; }
 
     protected override void Awake()
     {
@@ -83,6 +84,7 @@ public class Player : Character
             return;
 
         Debug.Log("My Turn!!");
+        ActionPiont = MaxActionPoint;
     }
 
     public void DrawCard(int n = 1)

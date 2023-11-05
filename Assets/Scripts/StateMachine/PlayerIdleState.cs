@@ -11,35 +11,49 @@ public sealed class PlayerIdleState : IdleState<Player>
 
     public override void OnEnter()
     {
-        Debug.Log("Idle");
-        var moveableCell = GridPathFinder.PredictMoves(StateActor, 5);
+        TurnManager.Instance.OnTurnChanged += OnTurnChangedHandle;
+
+        ActivateSelector();
+    }
+
+    public override void OnUpdate() { }
+    public override void OnExit() {
+        if(MoveSelector.Phase == CellSelector.SelectorPhase.started)
+        {
+            MoveSelector.Cancle();
+        }
+    }
+
+    void OnTurnChangedHandle(Character character)
+    {
+        if (character != StateActor)
+            return;
+
+        ActivateSelector();
+    }
+
+    void ActivateSelector()
+    {
+        var moveableCell = GridPathFinder.PredictMoves(StateActor, StateActor.ActionPiont);
 
         MoveSelector = new(cell => moveableCell.Any(move => move.ResultCell == cell));
         MoveSelector.OnStart += () =>
         {
             // input logic
-            Debug.Log("Enable");
             InputProvider.SelectTarget.Enable();
             InputProvider.SelectTarget.LeftClick.performed += MoveSelector.Choose;
         };
         MoveSelector.OnSuccess += (cell) =>
         {
-            var moves = GridPathFinder.PredictMoves(StateActor, 5).FirstOrDefault(move => move.ResultCell == cell);
-            Debug.Log(cell);
-            StateActor.State = new PlayerMoveState(StateActor, moves.Directions);
+            var moves = moveableCell.FirstOrDefault(move => move.ResultCell == cell);
+            StateActor.State = new MoveState<Player>(StateActor, moves.Directions);
         };
         MoveSelector.OnLeave += () =>
         {
-            Debug.Log("Disable");
             InputProvider.SelectTarget.Disable();
             InputProvider.SelectTarget.LeftClick.performed -= MoveSelector.Choose;
         };
 
         MoveSelector.Start();
-    }
-
-    public override void OnUpdate() { }
-    public override void OnExit() {
-        MoveSelector.Cancle();
     }
 }

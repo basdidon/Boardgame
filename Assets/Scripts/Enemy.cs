@@ -28,6 +28,7 @@ public class Enemy : Character
     {
         if (character != this)
             return;
+
         Debug.Log("Enemy Turn !!");
         Debug.Log("Enemy: i am lazy, so i decide to do nothing.");
         EndTurn();

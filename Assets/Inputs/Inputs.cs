@@ -44,6 +44,15 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Press"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""EndTurn"",
+                    ""type"": ""Button"",
+                    ""id"": ""bfb83f9a-f302-4b60-829d-7ec25d91a883"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -112,6 +121,17 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5c338b49-f0f7-4e1a-ab98-742e4b8d576a"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": ""Hold"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""EndTurn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -190,6 +210,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         m_BaseGameplay = asset.FindActionMap("BaseGameplay", throwIfNotFound: true);
         m_BaseGameplay_Roll = m_BaseGameplay.FindAction("Roll", throwIfNotFound: true);
         m_BaseGameplay_Movement = m_BaseGameplay.FindAction("Movement", throwIfNotFound: true);
+        m_BaseGameplay_EndTurn = m_BaseGameplay.FindAction("EndTurn", throwIfNotFound: true);
         // SelectTarget
         m_SelectTarget = asset.FindActionMap("SelectTarget", throwIfNotFound: true);
         m_SelectTarget_CursorPosition = m_SelectTarget.FindAction("CursorPosition", throwIfNotFound: true);
@@ -258,12 +279,14 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
     private List<IBaseGameplayActions> m_BaseGameplayActionsCallbackInterfaces = new List<IBaseGameplayActions>();
     private readonly InputAction m_BaseGameplay_Roll;
     private readonly InputAction m_BaseGameplay_Movement;
+    private readonly InputAction m_BaseGameplay_EndTurn;
     public struct BaseGameplayActions
     {
         private @Inputs m_Wrapper;
         public BaseGameplayActions(@Inputs wrapper) { m_Wrapper = wrapper; }
         public InputAction @Roll => m_Wrapper.m_BaseGameplay_Roll;
         public InputAction @Movement => m_Wrapper.m_BaseGameplay_Movement;
+        public InputAction @EndTurn => m_Wrapper.m_BaseGameplay_EndTurn;
         public InputActionMap Get() { return m_Wrapper.m_BaseGameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -279,6 +302,9 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @Movement.started += instance.OnMovement;
             @Movement.performed += instance.OnMovement;
             @Movement.canceled += instance.OnMovement;
+            @EndTurn.started += instance.OnEndTurn;
+            @EndTurn.performed += instance.OnEndTurn;
+            @EndTurn.canceled += instance.OnEndTurn;
         }
 
         private void UnregisterCallbacks(IBaseGameplayActions instance)
@@ -289,6 +315,9 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @Movement.started -= instance.OnMovement;
             @Movement.performed -= instance.OnMovement;
             @Movement.canceled -= instance.OnMovement;
+            @EndTurn.started -= instance.OnEndTurn;
+            @EndTurn.performed -= instance.OnEndTurn;
+            @EndTurn.canceled -= instance.OnEndTurn;
         }
 
         public void RemoveCallbacks(IBaseGameplayActions instance)
@@ -372,6 +401,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
     {
         void OnRoll(InputAction.CallbackContext context);
         void OnMovement(InputAction.CallbackContext context);
+        void OnEndTurn(InputAction.CallbackContext context);
     }
     public interface ISelectTargetActions
     {

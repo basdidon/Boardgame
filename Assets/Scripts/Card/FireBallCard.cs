@@ -21,6 +21,8 @@ public class FireBallCard : Card
         if (Player.State != Player.IdleState)
             return;
 
+        Debug.Log("use Card");
+
         CardVE.style.display = DisplayStyle.None;
 
         /// this card required empty space on adjucent tlie in direction that that player choose
@@ -37,7 +39,6 @@ public class FireBallCard : Card
         CellSelector cellSelector = new((cell)=>Direction.IsCellInDirection(Player.CellPos, cell, selectableDir));
         cellSelector.OnStart += () =>
         {
-            Debug.Log("Enable");
             Player.InputProvider.SelectTarget.Enable();
             Player.InputProvider.SelectTarget.LeftClick.performed += cellSelector.Choose;
             Player.InputProvider.SelectTarget.Cancle.performed += cellSelector.Cancle;
@@ -45,13 +46,11 @@ public class FireBallCard : Card
         cellSelector.OnSuccess += cell => Execute(Player, cell);
         cellSelector.OnCancle += () => CardVE.style.display = DisplayStyle.Flex;   // when cancle make card display again
         cellSelector.OnLeave += () => {
-
-            Debug.Log("Disable");
             Player.InputProvider.SelectTarget.LeftClick.performed -= cellSelector.Choose;
             Player.InputProvider.SelectTarget.Cancle.performed -= cellSelector.Cancle;
             Player.InputProvider.SelectTarget.Disable();
         };
-        Player.State = new PlayerPlayCardState(Player,cellSelector,null);
+        Player.State = new PlayerPlayCardState(cellSelector);
     }
 
     public void Execute(Player player, Vector3Int targetCell)
@@ -106,7 +105,6 @@ public class FireBallCard : Card
                 if(objs.First(obj => obj.Transform.CompareTag("Enemy")) is Enemy enemy)
                 {
                     hitEnemy = enemy;
-                    Debug.Log("-----------------");
                 }
 
                 break;
@@ -126,6 +124,7 @@ public class FireBallCard : Card
             if (hitEnemy != null)
                 hitEnemy.TakeDamage(5);
             Object.Destroy(obj);
+            player.State = null;
         };
     }
 }

@@ -2,38 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerPlayCardState : IState,ISelfExitState
+public class PlayerPlayCardState : IState
 {
-    Player StateActor { get; }
     CellSelector CellSelector { get; }
-    IState NextState { get; }
 
-    public PlayerPlayCardState(Player stateActor,CellSelector cellSelector,IState nextState)
+    public PlayerPlayCardState(CellSelector cellSelector)
     {
-        StateActor = stateActor;
         CellSelector = cellSelector;
-        NextState = nextState;
-
-        CellSelector.OnLeave += () => SetNextState();
     }
 
-    public void OnEnter()
-    {
-        Debug.Log("OnPlayACard");
-        CellSelector.Start();
-    }
+    public void OnEnter() { CellSelector.Start(); }
 
-    public void OnExit()
-    {
-    }
+    public void OnExit() { }
 
-    public void OnUpdate()
-    {
-        
-    }
-
-    public void SetNextState()
-    {
-        StateActor.State = CellSelector.IsPass ? NextState : null;
-    }
+    public void OnUpdate() { }
 }

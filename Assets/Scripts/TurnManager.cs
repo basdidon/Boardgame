@@ -21,15 +21,10 @@ public class TurnManager : MonoBehaviour
         private set
         {
             currentTurn = value;
-            CurrentActionPoint = maxActionPoint;
             OnTurnChanged?.Invoke(CurrentTurn);
         }
     }
-    public Action<Character> OnTurnChanged;
-
-    // action point
-    readonly int maxActionPoint = 3;
-    public int CurrentActionPoint { get; set; }
+    public event Action<Character> OnTurnChanged;
 
     private void Awake()
     {

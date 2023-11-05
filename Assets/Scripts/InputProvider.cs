@@ -53,6 +53,8 @@ public class InputProvider : MonoBehaviour
         };
 
         BaseGameplay.Roll.performed += _ => {};
+
+        BaseGameplay.EndTurn.performed += _ => Player.EndTurn();
     }
 
     public void OnEnable()
