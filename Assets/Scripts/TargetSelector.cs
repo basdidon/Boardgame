@@ -15,7 +15,6 @@ public class CellSelector : TargetSelector
     Grid MainGrid => BoardManager.Instance.MainGrid;
     Func<Vector3Int, bool> Predicate { get; }
     InputProvider InputProvider => Player.Instance.InputProvider;
-    Coroutine Coroutine { get; set; }
 
     GameObject _focusOverlay;
     List<GameObject> predicatedOverlays;
@@ -25,14 +24,13 @@ public class CellSelector : TargetSelector
         Predicate = predicate;
     }
 
-    Vector3Int targetCell = Vector3Int.zero;
     List<Vector3Int> predicatedCells;
 
     //
     public void Start()
     {
         OnStart?.Invoke();
-        Coroutine = BoardManager.Instance.StartCoroutine(GetCell());
+        BoardManager.Instance.StartCoroutine(GetCell());
 
         OnLeave += () =>
         {
@@ -50,7 +48,7 @@ public class CellSelector : TargetSelector
     public void Cancle()
     {
         isCancle = true;
-        BoardManager.Instance.StopCoroutine(Coroutine);
+       // BoardManager.Instance.StopCoroutine(Coroutine);
         OnCancle?.Invoke();
         OnLeave?.Invoke();
     }
@@ -62,8 +60,37 @@ public class CellSelector : TargetSelector
 
     public void Choose(InputAction.CallbackContext ctx)
     {
-        isPass = predicatedCells.Contains(targetCell);
-        Debug.Log($"you choose : {targetCell}");
+        if (TryGetCellByScreenPoint(out Vector3Int targetCell) && predicatedCells.Contains(targetCell))
+        {
+            //BoardManager.Instance.StopCoroutine(Coroutine);
+            isPass = true;
+            OnSuccess?.Invoke(targetCell);
+            OnLeave?.Invoke();
+            Debug.Log($"you choose : {targetCell}");
+        }
+    }
+
+    bool TryGetCellByScreenPoint(out Vector3Int targetCell)
+    {
+        targetCell = Vector3Int.zero;
+
+        RaycastHit[] hits = new RaycastHit[100];
+        int hitsCount;
+        
+        hitsCount = Physics.RaycastNonAlloc(Camera.main.ScreenPointToRay(InputProvider.SelectTarget.CursorPosition.ReadValue<Vector2>()), hits, 100);
+        
+        if (hitsCount > 0)
+        {
+            var slicedHits = hits.Take(hitsCount);
+            if (slicedHits.Any(hit => hit.transform.CompareTag("CellTile")))
+            {
+                var firstCellHit = slicedHits.First(hit => hit.transform.CompareTag("CellTile"));
+                targetCell = MainGrid.WorldToCell(firstCellHit.point);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // state control
@@ -82,10 +109,6 @@ public class CellSelector : TargetSelector
 
     public IEnumerator GetCell()
     {
-        RaycastHit[] hits = new RaycastHit[100];
-        int hitsCount;
-        //Debug.Log("StartSelection");
-
         // Active Focus Overlay
         _focusOverlay = TileOverlayPool.Instance.GetFocusOverlay(TileOverlayPool.OverlayType.Focus);
         if(_focusOverlay != null)
@@ -117,28 +140,17 @@ public class CellSelector : TargetSelector
         }
 
         yield return new WaitUntil(() => {
-            hitsCount = Physics.RaycastNonAlloc(Camera.main.ScreenPointToRay(InputProvider.SelectTarget.CursorPosition.ReadValue<Vector2>()), hits, 100);
-            if (hitsCount > 0)
+            if(TryGetCellByScreenPoint(out Vector3Int targetCell))
             {
-                var slicedHits = hits.Take(hitsCount);
-                if (slicedHits.Any(hit => hit.transform.CompareTag("CellTile")))
-                {
-                    var firstCellHit = slicedHits.First(hit => hit.transform.CompareTag("CellTile"));
-                    targetCell = MainGrid.WorldToCell(firstCellHit.point);
-
-                    if (_focusOverlay != null)
-                        _focusOverlay.transform.position = MainGrid.GetCellCenterWorld(targetCell);
-                }
-            }
-
-            if (targetCell != null)
                 OnUpdate?.Invoke(targetCell);
 
-            return isPass;
+                if (_focusOverlay != null)
+                    _focusOverlay.transform.position = MainGrid.GetCellCenterWorld(targetCell);
+            }
+               
+            return isPass || isCancle;
         });
 
-        OnSuccess?.Invoke(targetCell);
-        OnLeave?.Invoke();
         //Debug.Log("end selection!!");
     }
 

@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 5056300427950252252}
   - component: {fileID: 1173068495222136377}
   - component: {fileID: 7528150421264830577}
-  - component: {fileID: 7858648218761746677}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -48,6 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cellPos: {x: 0, y: 0, z: 0}
+  hp: 10
 --- !u!114 &7528150421264830577
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58,18 +58,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ec72ea1eb5e736f40be305ccbc26539a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &7858648218761746677
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3445577563457189262}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09ce555974bc98f47af6aad3e588e222, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &3104760375739649122

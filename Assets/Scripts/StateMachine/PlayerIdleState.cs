@@ -24,7 +24,7 @@ public sealed class PlayerIdleState : IdleState<Player>
         };
         MoveSelector.OnSuccess += (cell) =>
         {
-            var moves = GridPathFinder.PredictMoves(StateActor, 5).First(move => move.ResultCell == cell);
+            var moves = GridPathFinder.PredictMoves(StateActor, 5).FirstOrDefault(move => move.ResultCell == cell);
             Debug.Log(cell);
             StateActor.State = new PlayerMoveState(StateActor, moves.Directions);
         };
