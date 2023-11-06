@@ -5,5 +5,5 @@
     <Style src="project://database/Assets/style.uss?fileID=7433441132597879392&amp;guid=411df43113d72ba469a9d6250622bd72&amp;type=3#style" />
     <ui:Instance template="DeckPanel" name="DeckPanel" style="width: 12%; height: 30%; margin-top: auto;" />
     <ui:Instance template="HandPanel" name="HandPanel" class="hand-panel" />
-    <ui:Instance template="PlayCardZone" name="PlayCardZone" style="position: absolute; width: 1000px; height: 500px; left: 460px; bottom: 290px;" />
+    <ui:Instance template="PlayCardZone" name="PlayCardZone" style="position: absolute; width: 1000px; height: 500px; left: 460px; bottom: 290px; visibility: hidden;" />
 </ui:UXML>

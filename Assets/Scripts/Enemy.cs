@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static BasDidon.Direction;
+using static BasDidon.PathFinder.GridPathFinder;
 
 public class Enemy : Character
 {
@@ -30,7 +31,11 @@ public class Enemy : Character
             return;
 
         Debug.Log("Enemy Turn !!");
-        Debug.Log("Enemy: i am lazy, so i decide to do nothing.");
+        Debug.Log("Enemy: i am lazy, so i decided to do nothing.");
         EndTurn();
+    }
+
+    void Move()
+    {
     }
 }

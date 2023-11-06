@@ -46,8 +46,6 @@ public class TurnManager : MonoBehaviour
         {
             CurrentTurn = Queue[0];
         }
-
-        Debug.Log("Start");
     }
 
     public void TurnRegister(Character character)

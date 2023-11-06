@@ -32,7 +32,7 @@ public abstract class Character : MonoBehaviour, IBoardObject,IStateActor, IDama
         BoardManager.Instance.AddBoardObject(this);
         TurnManager.Instance.TurnRegister(this);
         TurnManager.Instance.OnTurnChanged += OnTurnChangedHandle;
-        Debug.Log(name);
+        // Debug.Log(name);
     }
 
     protected virtual void Update()

@@ -12,7 +12,7 @@ public class Player : Character
     #region IBoardObject Implements
     public override bool CanMoveTo(Vector3Int cellPos)
     {
-        if (BoardManager.Instance.BoardObjectsOnCell(cellPos).Count() > 0)
+        if (BoardManager.Instance.BoardObjectsOnCell(cellPos).Any())
             return false;
         return true;
     }
@@ -62,6 +62,7 @@ public class Player : Character
         for (int i = 0; i < 10; i++)
         {
             cardList.Add(new FireBallCard());
+            cardList.Add(new Teleport());
         }
 
         Deck = new(cardList);

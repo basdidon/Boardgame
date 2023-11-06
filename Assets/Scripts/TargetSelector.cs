@@ -39,7 +39,7 @@ public class CellSelector : TargetSelector
     List<Vector3Int> predicatedCells;
 
     //
-    public void Start() 
+    public void Start()
     {
         OnStart?.Invoke();
         Phase = SelectorPhase.started;
@@ -146,6 +146,7 @@ public class CellSelector : TargetSelector
                     _focusOverlay.transform.position = worldPos;
                 }
             }
+
             return Phase == SelectorPhase.performed || Phase == SelectorPhase.cancled;
                
         });

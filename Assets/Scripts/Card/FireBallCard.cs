@@ -8,7 +8,7 @@ using DG.Tweening;
 
 public class FireBallCard : Card
 {
-    public override string CardSOName => "FireBallCardData";
+    public override string CardSOName => "FireBall";
     string ProjectilePrefabURL => "ProjectilePrefabs/FireballProjectile";
 
     readonly int distance = 5;
@@ -44,11 +44,19 @@ public class FireBallCard : Card
             Player.InputProvider.SelectTarget.Cancle.performed += cellSelector.Cancle;
         };
         cellSelector.OnSuccess += cell => Execute(Player, cell);
-        cellSelector.OnCancle += () => CardVE.style.display = DisplayStyle.Flex;   // when cancle make card display again
+        cellSelector.OnCancle += () =>
+        {
+            CardVE.style.display = DisplayStyle.Flex;   // when cancle make card display again
+        };
         cellSelector.OnLeave += () => {
             Player.InputProvider.SelectTarget.LeftClick.performed -= cellSelector.Choose;
             Player.InputProvider.SelectTarget.Cancle.performed -= cellSelector.Cancle;
             Player.InputProvider.SelectTarget.Disable();
+
+            if(cellSelector.Phase == CellSelector.SelectorPhase.cancled)
+            {
+                Player.State = null;
+            }
         };
         Player.State = new PlayerPlayCardState(cellSelector);
     }

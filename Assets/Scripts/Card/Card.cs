@@ -44,6 +44,13 @@ public abstract class Card
         CardDragManipulator = new CardDragManipulator(cardVE, Root);
         Dragable = true;
         // update cardVE (set name,cost)
+        var cardNameTxt = cardVE.Q<Label>("card-name");
+        cardNameTxt.text = CardSO.name;
+        var cardCostTxt = cardVE.Q<Label>("card-cost");
+        cardCostTxt.text = $"{CardSO.Cost}";
+        var cardIcon = cardVE.Q<VisualElement>("card-icon");
+        cardIcon.style.backgroundImage = CardSO.Sprite.texture;
+
     }
 
     public abstract void UseCard();
