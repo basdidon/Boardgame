@@ -27,12 +27,12 @@ public abstract class Card
     }
 
     public CardSO CardSO { get; private set; }
-    readonly string cardDataURL = "CardsData/";
+    string CardDataURL => "CardsData/";
     public abstract string CardSOName { get; }
 
     public Card()
     {
-        CardSO = Resources.Load(cardDataURL + CardSOName) as CardSO;
+        CardSO = Resources.Load(CardDataURL + CardSOName) as CardSO;
     }
 
     public void BindVisualElement(VisualElement cardVE,VisualElement root)

@@ -17,7 +17,14 @@ public class Deck
 
     public void SuffleDeck()
     {
+        for(int i = 0; i < cards.Count; i++)
+        {
+            var rand = Random.Range(0, cards.Count);
 
+            var temp = cards[i];
+            cards[i] = cards[rand];
+            cards[rand] = temp;
+        }
     }
 
     public bool TryDraw(out Card card)
