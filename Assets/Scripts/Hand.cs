@@ -26,10 +26,6 @@ public class Hand
     public void AddCard(Card card)
     {
         cards.Add(card);
-        if(cards.Count == 1)
-        {
-            cards[0].CardVE.style.scale = new Scale(new Vector3(2,2,1));
-        }
     }
 
     public void Disable()

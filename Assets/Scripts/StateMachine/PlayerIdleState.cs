@@ -34,7 +34,7 @@ public sealed class PlayerIdleState : IdleState<Player>
 
     void ActivateSelector()
     {
-        var moveableCell = GridPathFinder.PredictMoves(StateActor, StateActor.ActionPiont);
+        var moveableCell = PredictPathFinder.PredictMoves(StateActor, StateActor.ActionPiont);
 
         MoveSelector = new(cell => moveableCell.Any(move => move.ResultCell == cell));
         MoveSelector.OnStart += () =>

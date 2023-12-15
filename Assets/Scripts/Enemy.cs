@@ -3,8 +3,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static BasDidon.Direction;
-using static BasDidon.PathFinder.GridPathFinder;
+using BasDidon.Direction;
+using BasDidon.PathFinder;
 
 public class Enemy : Character
 {
@@ -20,7 +20,7 @@ public class Enemy : Character
         }
     }
 
-    public override bool TryMove(Vector3Int from, Directions dir,out Vector3Int moveResult)
+    public override bool TryMove(Vector3Int from, Direction dir,out Vector3Int moveResult)
     {
         throw new NotImplementedException();
     }

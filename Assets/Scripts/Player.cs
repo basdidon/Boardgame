@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
 using System;
-using static BasDidon.Direction;
+using BasDidon.Direction;
 
 public class Player : Character
 {
@@ -17,10 +17,10 @@ public class Player : Character
         return true;
     }
 
-    public override bool TryMove(Vector3Int from, Directions dir, out Vector3Int moveResult)
+    public override bool TryMove(Vector3Int from, Direction dir, out Vector3Int moveResult)
     {
         moveResult = CellPos;
-        var targetCell = from + DirectionToVector3Int(dir);
+        var targetCell = from + GridDirection.DirectionToVector3Int(dir);
         if (!CanMoveTo(targetCell))
             return false;
 

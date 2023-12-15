@@ -1,10 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using BasDidon.PathFinder;
-using static BasDidon.Direction;
+using BasDidon.Direction;
 
-public abstract class Character : MonoBehaviour, IBoardObject,IStateActor, IDamageable,GridPathFinder.IMoveable
+public abstract class Character : MonoBehaviour, IBoardObject,IStateActor, IDamageable,IPredictMoveable
 {
     #region IBoardObject
     public Transform Transform => transform;
@@ -23,7 +21,7 @@ public abstract class Character : MonoBehaviour, IBoardObject,IStateActor, IDama
     [SerializeField] protected int hp = 10;
 
     public abstract bool CanMoveTo(Vector3Int cellPos);
-    public abstract bool TryMove(Vector3Int from, Directions dir,out Vector3Int moveResult);
+    public abstract bool TryMove(Vector3Int from, Direction dir,out Vector3Int moveResult);
     public abstract void TakeDamage(int damage);
 
     protected virtual void Awake()

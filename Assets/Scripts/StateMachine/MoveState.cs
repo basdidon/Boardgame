@@ -1,18 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using static BasDidon.Direction;
+using BasDidon.Direction;
 
 public class MoveState<T> : IState, ISelfExitState where T : IStateActor,IBoardObject
 {
     public T StateActor { get; }
 
     readonly float moveSpeed = 5f;
-    protected List<Directions> Directions { get; }
-    protected Directions CurrentDirection { get; set; }
+    protected List<Direction> Directions { get; }
+    protected Direction CurrentDirection { get; set; }
 
     protected Vector3Int StartCell => StateActor.CellPos;
-    protected Vector3Int TargetCell => StartCell + DirectionToVector3Int(CurrentDirection);
+    protected Vector3Int TargetCell => StartCell + GridDirection.DirectionToVector3Int(CurrentDirection);
 
 
     protected Vector3 StartWorldCenter => BoardManager.Instance.MainGrid.GetCellCenterWorld(StartCell);
@@ -21,7 +21,7 @@ public class MoveState<T> : IState, ISelfExitState where T : IStateActor,IBoardO
     protected float Duration => 1 / moveSpeed;
     protected float TimeElapsed { get; set; }
 
-    public MoveState(T stateActor, IEnumerable<Directions> directions)
+    public MoveState(T stateActor, IEnumerable<Direction> directions)
     {
         StateActor = stateActor;
         Directions = directions.ToList();
