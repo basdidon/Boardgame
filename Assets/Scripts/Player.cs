@@ -20,7 +20,7 @@ public class Player : Character
     public override bool TryMove(Vector3Int from, Direction dir, out Vector3Int moveResult)
     {
         moveResult = CellPos;
-        var targetCell = from + GridDirection.DirectionToVector3Int(dir);
+        var targetCell = from + dir.DirectionVector;
         if (!CanMoveTo(targetCell))
             return false;
 

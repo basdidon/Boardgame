@@ -15,30 +15,6 @@ public class FireBallCard : Card
 
     readonly int distance = 5;
 
-    //
-    public static void AddDirectionToDirectionGroup(ref DirectionGroup group, Direction direction)
-    { 
-        // Perform a bitwise OR operation to add the direction to the group
-        int updatedGroup = (byte)group | (byte)direction;
-        /*
-        // Ensure the updated byte value represents a valid DirectionGroup
-        if (!Enum.IsDefined(typeof(DirectionGroup), (byte)updatedGroup))
-        {
-            // Handle invalid input or throw an exception
-            throw new ArgumentException($"Invalid direction or direction group. {(byte)updatedGroup}");
-        }*/
-
-        Debug.Log(Convert.ToString(updatedGroup, 2));
-
-        group = (DirectionGroup)updatedGroup;
-    }
-
-    public static void AddDirectionVectorToDirectionGroup(ref DirectionGroup group, Vector3Int dirVec)
-    {
-        var dir = GridDirection.Vector3IntToDirection(dirVec);
-        AddDirectionToDirectionGroup(ref group, dir);
-    }
-
     public override void UseCard()
     {
         if (TurnManager.Instance.CurrentTurn != Player)
@@ -53,16 +29,23 @@ public class FireBallCard : Card
 
         /// this card required empty space on adjucent tlie in direction that that player choose
         /// on which direction that get blocks, i don't let player select that direction
-        DirectionGroup selectableDir = DirectionGroup.None;
-        foreach (var dirVec in GridDirection.CardinalVector)
+        DirectionGroup selectableDir = new();
+        foreach (var dir in DirectionGroup.CardinalDirection)
         {
-            if (!BoardManager.Instance.BoardObjectsOnCell(Player.CellPos + dirVec).Any()) // if nothing on cell
+            if (!BoardManager.Instance.BoardObjectsOnCell(Player.CellPos + dir.DirectionVector).Any()) // if nothing on cell
             {
-                AddDirectionVectorToDirectionGroup(ref selectableDir,dirVec); // add direction to selectableDir
+                selectableDir.Add(dir); // add direction to selectableDir
             }
         }
 
-        CellSelector cellSelector = new((cell)=>GridDirection.IsCellInDirection(Player.CellPos, cell, selectableDir));
+        CellSelector cellSelector = new((cell)=> {
+            var result = selectableDir.IsCellInDirectionGroup(Player.CellPos, cell);
+            if (result)
+            {
+                Debug.Log($"{cell} - {Player.CellPos} : {cell - Player.CellPos}");
+            }
+            return result;
+        });
         cellSelector.OnStart += () =>
         {
             Player.InputProvider.SelectTarget.Enable();

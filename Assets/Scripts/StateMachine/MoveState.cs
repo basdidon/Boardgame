@@ -12,7 +12,7 @@ public class MoveState<T> : IState, ISelfExitState where T : IStateActor,IBoardO
     protected Direction CurrentDirection { get; set; }
 
     protected Vector3Int StartCell => StateActor.CellPos;
-    protected Vector3Int TargetCell => StartCell + GridDirection.DirectionToVector3Int(CurrentDirection);
+    protected Vector3Int TargetCell => StartCell + CurrentDirection.DirectionVector;
 
 
     protected Vector3 StartWorldCenter => BoardManager.Instance.MainGrid.GetCellCenterWorld(StartCell);
