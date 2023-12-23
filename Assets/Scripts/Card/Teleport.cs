@@ -12,7 +12,6 @@ public class Teleport : Card
     public override string CardSOName => "Teleport";
     string ProtalPrefabURL => "Portals/VortexPortalBlue";
 
-
     public override void UseCard()
     {
         if (TurnManager.Instance.CurrentTurn != Player)

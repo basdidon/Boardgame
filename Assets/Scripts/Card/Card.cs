@@ -50,7 +50,6 @@ public abstract class Card
         cardCostTxt.text = $"{CardSO.Cost}";
         var cardIcon = cardVE.Q<VisualElement>("card-icon");
         cardIcon.style.backgroundImage = CardSO.Sprite.texture;
-
     }
 
     public abstract void UseCard();

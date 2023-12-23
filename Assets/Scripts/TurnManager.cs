@@ -38,6 +38,8 @@ public class TurnManager : MonoBehaviour
         }
 
         queue = new();
+
+        CardFactory.Initialize();
     }
 
     private void Start()

@@ -30,7 +30,6 @@ public class Player : Character
 
         moveResult = targetCell;
         return true;
-
     }
     #endregion
 
@@ -61,8 +60,8 @@ public class Player : Character
 
         for (int i = 0; i < 10; i++)
         {
-            cardList.Add(new FireBallCard());
-            cardList.Add(new Teleport());
+            cardList.Add(CardFactory.GetCard("FireBallCard")); //new FireBallCard()); 
+            cardList.Add(CardFactory.GetCard("Teleport")); // new Teleport()); ;
         }
 
         Deck = new(cardList);

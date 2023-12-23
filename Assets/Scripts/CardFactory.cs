@@ -7,8 +7,8 @@ using System.Reflection;
 
 public static class CardFactory
 {
-    static Dictionary<Guid, Card> cardDict;
-    static Dictionary<Guid, Card> CardDict
+    static Dictionary<string, Type> cardDict;
+    static Dictionary<string, Type> CardDict
     {
         get
         {
@@ -26,23 +26,35 @@ public static class CardFactory
     public static void Initialize()
     {
         // add Load assemby code here
+        var cardTypes = Assembly.GetAssembly(typeof(Card)).GetTypes().Where(type=>type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(Card)));
 
         CardDict = new();
 
         // create card instance that loaded from assembly then put it into dict.
+        foreach(var cardType in cardTypes)
+        {
+            Debug.Log($"{cardType.Name} added to dict.");
+            // var tempCard = Activator.CreateInstance(cardType) as Card;
+            cardDict.Add(cardType.Name, cardType);
+        }
     }
 
-    public static Card GetCard(Guid guid)
+    public static Card GetCard(string id)
     {
-        if(cardDict.TryGetValue(guid,out Card card))
+        if(cardDict.TryGetValue(id,out Type type))
         {
-            return card;
+            return Activator.CreateInstance(type) as Card;
         }
 
         throw new Exception("id not found.");
     }
 
-    public static IEnumerable<KeyValuePair<Guid,Card>> GetCards()
+    public static IEnumerable<string> GetCardNames()
+    {
+        return CardDict.Keys;
+    }
+
+    public static IEnumerable<KeyValuePair<string,Type>> GetCards()
     {
         if (CardDict == null)
             throw new Exception("You need to called Initalize() first.");
