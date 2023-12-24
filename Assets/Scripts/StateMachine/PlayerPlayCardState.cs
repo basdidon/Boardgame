@@ -2,18 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerPlayCardState : IState
+public class PlayerPlayCardState : IState<Player>
 {
+    public Player StateActor { get; }
     CellSelector CellSelector { get; }
 
-    public PlayerPlayCardState(CellSelector cellSelector)
+    public PlayerPlayCardState(Player player,CellSelector cellSelector)
     {
+        StateActor = player;
         CellSelector = cellSelector;
     }
 
-    public void OnEnter() { CellSelector.Start(); }
+    public void StartState()
+    {
+        CellSelector.Start();
+    }
 
-    public void OnExit() { }
+    public void UpdateState()
+    {
+    }
 
-    public void OnUpdate() { }
+    public void ExitState()
+    {
+    }
 }

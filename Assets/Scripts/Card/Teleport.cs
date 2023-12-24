@@ -45,7 +45,7 @@ public class Teleport : Card
             }
         };
 
-        Player.State = new PlayerPlayCardState(cellSelector);
+        Player.State = new PlayerPlayCardState(Player,cellSelector);
     }
 
     private void Execute(Player player, Vector3Int cell)

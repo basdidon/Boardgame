@@ -1,5 +1,5 @@
 
-public class IdleState<T> : IState where T : IStateActor
+public class IdleState<T> : IState<T> where T : IStateActor<T>
 {
     public T StateActor { get; }
 
@@ -8,7 +8,7 @@ public class IdleState<T> : IState where T : IStateActor
         StateActor = stateActor;
     }
 
-    public virtual void OnEnter() { }
-    public virtual void OnUpdate() { }
-    public virtual void OnExit() { }
+    public virtual void StartState() { }
+    public virtual void UpdateState() { }
+    public virtual void ExitState() { }
 }

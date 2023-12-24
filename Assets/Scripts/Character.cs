@@ -2,7 +2,7 @@ using UnityEngine;
 using BasDidon.PathFinder;
 using BasDidon.Direction;
 
-public abstract class Character : MonoBehaviour, IBoardObject,IStateActor, IDamageable,IPredictMoveable
+public abstract class Character<T> : MonoBehaviour, IBoardObject,IStateActor<T>,ITurnRunner, IDamageable,IPredictMoveable where T:IStateActor<T>
 {
     #region IBoardObject
     public Transform Transform => transform;
@@ -39,29 +39,28 @@ public abstract class Character : MonoBehaviour, IBoardObject,IStateActor, IDama
     }
 
     // Events
-    protected abstract void OnTurnChangedHandle(Character character);
-
+    protected abstract void OnTurnChangedHandle(ITurnRunner character);
 
     public void EndTurn()
     {
         TurnManager.Instance.EndTurn(this);
     }
 
-    public IState IdleState { get; protected set; }
+    public IState<T> IdleState { get; protected set; }
 
-    IState state;
-    public IState State {
+    IState<T> state;
+    public IState<T> State {
         get => state;
         set
         {
-            State?.OnExit();
+            State?.ExitState();
             state = value ?? IdleState;
-            State.OnEnter();
+            State.StartState();
         }
     }
 
     public void UpdateState()
     {
-        State?.OnUpdate();
+        State?.UpdateState();
     }
 }

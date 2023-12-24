@@ -6,7 +6,7 @@ using UnityEngine;
 using BasDidon.Direction;
 using BasDidon.PathFinder;
 
-public class Enemy : Character
+public class Enemy : Character<Enemy>
 {
     public override bool CanMoveTo(Vector3Int cellPos) => false;
 
@@ -25,9 +25,9 @@ public class Enemy : Character
         throw new NotImplementedException();
     }
 
-    protected override void OnTurnChangedHandle(Character character)
+    protected override void OnTurnChangedHandle(ITurnRunner character)
     {
-        if (character != this)
+        if (!ReferenceEquals(character,this))
             return;
 
         Debug.Log("Enemy Turn !!");

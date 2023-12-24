@@ -67,7 +67,7 @@ public class FireBallCard : Card
                 Player.State = null;
             }
         };
-        Player.State = new PlayerPlayCardState(cellSelector);
+        Player.State = new PlayerPlayCardState(Player,cellSelector);
     }
 
     public void Execute(Player player, Vector3Int targetCell)

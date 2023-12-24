@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System;
 using BasDidon.Direction;
 
-public class Player : Character
+public class Player : Character<Player>
 {
     public static Player Instance { get; private set; }
     public InputProvider InputProvider { get; private set; }
@@ -78,9 +78,9 @@ public class Player : Character
         DrawCard(5);
     }
 
-    protected override void OnTurnChangedHandle(Character character)
+    protected override void OnTurnChangedHandle(ITurnRunner character)
     {
-        if (character != this)
+        if (ReferenceEquals(character,this))
             return;
 
         Debug.Log("My Turn!!");

@@ -9,24 +9,24 @@ public sealed class PlayerIdleState : IdleState<Player>
 
     public PlayerIdleState(Player stateActor) : base(stateActor) { }
 
-    public override void OnEnter()
+    public override void StartState()
     {
         TurnManager.Instance.OnTurnChanged += OnTurnChangedHandle;
 
         ActivateSelector();
     }
 
-    public override void OnUpdate() { }
-    public override void OnExit() {
+    public override void UpdateState() { }
+    public override void ExitState() {
         if(MoveSelector.Phase == CellSelector.SelectorPhase.started)
         {
             MoveSelector.Cancle();
         }
     }
 
-    void OnTurnChangedHandle(Character character)
+    void OnTurnChangedHandle(ITurnRunner character)
     {
-        if (character != StateActor)
+        if (ReferenceEquals(character,StateActor))
             return;
 
         ActivateSelector();

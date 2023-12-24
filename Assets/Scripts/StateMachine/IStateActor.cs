@@ -1,7 +1,5 @@
-
-public interface IStateActor
+public interface IStateActor<T> where T : IStateActor<T>
 {
-    public IState IdleState { get;}
-    public IState State { get; set; }
-    public void UpdateState();
+    public IState<T> IdleState { get; }  // at default state
+    IState<T> State { get; set; }
 }

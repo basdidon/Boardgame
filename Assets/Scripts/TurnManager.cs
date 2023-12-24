@@ -6,17 +6,22 @@ using TMPro;
 using UnityEngine.UI;
 using System;
 
+public interface ITurnRunner
+{
+
+}
+
 public class TurnManager : MonoBehaviour
 {
     public static TurnManager Instance { get; private set; }
 
     // Queue
-    [SerializeField] List<Character> queue;
-    public IReadOnlyList<Character> Queue => queue;
+    [SerializeField] List<ITurnRunner> queue;
+    public IReadOnlyList<ITurnRunner> Queue => queue;
 
     // CurruntTurn
-    [SerializeField]  Character currentTurn;
-    public Character CurrentTurn {
+    [SerializeField]  ITurnRunner currentTurn;
+    public ITurnRunner CurrentTurn {
         get => currentTurn;
         private set
         {
@@ -24,7 +29,7 @@ public class TurnManager : MonoBehaviour
             OnTurnChanged?.Invoke(CurrentTurn);
         }
     }
-    public event Action<Character> OnTurnChanged;
+    public event Action<ITurnRunner> OnTurnChanged;
 
     private void Awake()
     {
@@ -50,23 +55,23 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    public void TurnRegister(Character character)
+    public void TurnRegister(ITurnRunner turnRunner)
     {
-        queue.Add(character);
+        queue.Add(turnRunner);
     }
 
-    public void TurnUnregister(Character character)
+    public void TurnUnregister(ITurnRunner turnRunner)
     {
-        queue.Remove(character);
-        if (CurrentTurn == character && Queue.Count > 0)
+        queue.Remove(turnRunner);
+        if (CurrentTurn == turnRunner && Queue.Count > 0)
         {
             CurrentTurn = Queue[0];
         }
     }
 
-    public void EndTurn(Character character)
+    public void EndTurn(ITurnRunner turnRunner)
     {
-        if (CurrentTurn != character)
+        if (CurrentTurn != turnRunner)
             return;
 
         queue.RemoveAt(0);

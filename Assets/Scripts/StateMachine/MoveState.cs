@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Linq;
 using BasDidon.Direction;
 
-public class MoveState<T> : IState, ISelfExitState where T : IStateActor,IBoardObject
+public class MoveState<T> : IState<T>, ISelfExitState where T : IStateActor<T>,IBoardObject
 {
     public T StateActor { get; }
 
@@ -27,7 +27,7 @@ public class MoveState<T> : IState, ISelfExitState where T : IStateActor,IBoardO
         Directions = directions.ToList();
     }
 
-    public virtual void OnEnter() 
+    public virtual void StartState() 
     {
         if (!Directions.Any())
             return;
@@ -37,14 +37,15 @@ public class MoveState<T> : IState, ISelfExitState where T : IStateActor,IBoardO
 
         TimeElapsed = 0;
     }
-    public virtual void OnUpdate() {
+    public virtual void UpdateState() {
         TimeElapsed += Time.deltaTime;
         StateActor.Transform.position = Vector3.Lerp(StartWorldCenter, TargetWorldCenter, TimeElapsed / Duration);
 
         if (TimeElapsed >= Duration)
             SetNextState();
     }
-    public virtual void OnExit() {
+    public virtual void ExitState ()
+    {
         StateActor.Transform.position = TargetWorldCenter;
         StateActor.CellPos = TargetCell;
     }
