@@ -31,8 +31,10 @@ public class Enemy : Character<Enemy>
             return;
 
         Debug.Log("Enemy Turn !!");
+        /*
         Debug.Log("Enemy: i am lazy, so i decided to do nothing.");
         EndTurn();
+        */
     }
 
     void Move()

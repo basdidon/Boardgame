@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using TMPro;
-using UnityEngine.UI;
 using System;
+using UnityEngine.UIElements;
+using UnityEditor.UIElements;
 
 public interface ITurnRunner
 {
@@ -77,5 +78,49 @@ public class TurnManager : MonoBehaviour
         queue.RemoveAt(0);
         queue.Add(CurrentTurn);
         CurrentTurn = Queue[0];
+    }
+
+    public void NextTurn()
+    {
+        EndTurn(CurrentTurn);
+    }
+}
+
+[CustomEditor(typeof(TurnManager))]
+public class TurnManagerCustomEditor : Editor
+{
+    public override VisualElement CreateInspectorGUI()
+    {
+        var container = new VisualElement();
+
+        var scriptRefOF = new ObjectField()
+        {
+            label = "Script",
+            bindingPath = "m_Script"
+        };
+        scriptRefOF.SetEnabled(false);
+
+        if (Application.isPlaying)
+        {
+            var btn = new Button()
+            {
+                text = "End Turn"
+            };
+
+            btn.clicked += OnEndturnBtnClicked;
+
+            container.Add(btn);
+        }
+
+        container.Insert(0, scriptRefOF);
+        return container;
+    }
+
+    private void OnEndturnBtnClicked()
+    {
+        if (target is TurnManager turnManager)
+        {
+            turnManager.NextTurn();
+        }
     }
 }

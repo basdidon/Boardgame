@@ -1,6 +1,9 @@
 using UnityEngine;
 using BasDidon.PathFinder;
 using BasDidon.Direction;
+using UnityEditor;
+using UnityEditor.UIElements;
+using UnityEngine.UIElements;
 
 public abstract class Character<T> : MonoBehaviour, IBoardObject,IStateActor<T>,ITurnRunner, IDamageable,IPredictMoveable where T:IStateActor<T>
 {

@@ -1,6 +1,5 @@
 using BasDidon.PathFinder;
 using System.Linq;
-using UnityEngine;
 
 public sealed class PlayerIdleState : IdleState<Player>
 {
@@ -26,10 +25,15 @@ public sealed class PlayerIdleState : IdleState<Player>
 
     void OnTurnChangedHandle(ITurnRunner character)
     {
-        if (ReferenceEquals(character,StateActor))
-            return;
+        if (ReferenceEquals(character, StateActor))
+        {
+            ActivateSelector();
+        }
+        else
+        {
+            MoveSelector.Cancle();
+        }
 
-        ActivateSelector();
     }
 
     void ActivateSelector()
