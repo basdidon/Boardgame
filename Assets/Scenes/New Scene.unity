@@ -914,8 +914,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4526169507ea81549bc3576108e88526, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  queue: []
-  currentTurn: {fileID: 0}
 --- !u!4 &231107359
 Transform:
   m_ObjectHideFlags: 0
